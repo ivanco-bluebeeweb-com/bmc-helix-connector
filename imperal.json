@@ -1,0 +1,3661 @@
+{
+  "manifest_schema_version": 3,
+  "sdk_version": "5.11.0",
+  "app_id": "bmc-helix-connector",
+  "version": "0.1.0",
+  "name": "BMC Helix",
+  "description": "Connect your own BMC Helix ITSM (Remedy AR System) instance to manage Incidents, Problems, Changes, Work Orders, Knowledge Articles, and CMDB CIs through the AR System Data REST API, plus a generic form passthrough.",
+  "icon": "icon.svg",
+  "actions_explicit": true,
+  "system": false,
+  "capabilities": [
+    "bmc_helix:read",
+    "bmc_helix:write"
+  ],
+  "tools": [
+    {
+      "name": "connect_bmc_helix",
+      "description": "Connect a BMC Helix ITSM (Remedy AR System) instance via JWT login, after validating connectivity.",
+      "action_type": "write",
+      "chain_callable": true,
+      "effects": [
+        "bmc_helix.provider.connected"
+      ],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "label": {
+            "default": "",
+            "description": "Friendly instance label, e.g. 'Acme Production'.",
+            "title": "Label",
+            "type": "string"
+          },
+          "host": {
+            "description": "AR REST host, e.g. 'https://acme-restapi.onbmc.com' (SaaS) or 'https://host:port' (on-prem).",
+            "title": "Host",
+            "type": "string"
+          },
+          "username": {
+            "description": "AR System username.",
+            "title": "Username",
+            "type": "string"
+          },
+          "password": {
+            "description": "AR System password.",
+            "title": "Password",
+            "type": "string"
+          }
+        },
+        "required": [
+          "host",
+          "username",
+          "password"
+        ],
+        "title": "ConnectBMCHelixParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "host": {
+            "title": "Host",
+            "type": "string"
+          },
+          "connected": {
+            "default": true,
+            "title": "Connected",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "label",
+          "host"
+        ],
+        "title": "BMCHelixConnection",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "bmc-helix-connector.connect_bmc_helix",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "bmc_helix"
+    },
+    {
+      "name": "disconnect_bmc_helix",
+      "description": "Disconnect a BMC Helix instance: deletes only the saved credentials. Nothing in BMC Helix itself is changed.",
+      "action_type": "write",
+      "chain_callable": true,
+      "effects": [
+        "bmc_helix.provider.disconnected"
+      ],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "description": "Saved BMC Helix connection ID to remove from Imperal.",
+            "title": "Connection Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "connection_id"
+        ],
+        "title": "DisconnectBMCHelixParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "deleted": {
+            "default": true,
+            "title": "Deleted",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "id",
+          "title"
+        ],
+        "title": "DeleteResult",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "bmc-helix-connector.disconnect_bmc_helix",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "bmc_helix"
+    },
+    {
+      "name": "list_connections",
+      "description": "List the connected BMC Helix instances.",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {},
+        "title": "NoParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "$defs": {
+          "BMCHelixConnection": {
+            "properties": {
+              "id": {
+                "title": "Id",
+                "type": "string"
+              },
+              "title": {
+                "title": "Title",
+                "type": "string"
+              },
+              "kind": {
+                "default": "",
+                "title": "Kind",
+                "type": "string"
+              },
+              "subtitle": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Subtitle"
+              },
+              "description": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Description"
+              },
+              "status": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Status"
+              },
+              "url": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Url"
+              },
+              "label": {
+                "title": "Label",
+                "type": "string"
+              },
+              "host": {
+                "title": "Host",
+                "type": "string"
+              },
+              "connected": {
+                "default": true,
+                "title": "Connected",
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "id",
+              "title",
+              "label",
+              "host"
+            ],
+            "title": "BMCHelixConnection",
+            "type": "object",
+            "x-sdl": "entity"
+          }
+        },
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "connections": {
+            "default": [],
+            "items": {
+              "$ref": "#/$defs/BMCHelixConnection"
+            },
+            "title": "Connections",
+            "type": "array"
+          }
+        },
+        "required": [
+          "id",
+          "title"
+        ],
+        "title": "ConnectionList",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "bmc-helix-connector.list_connections",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "bmc_helix"
+    },
+    {
+      "name": "list_incidents",
+      "description": "List incidents on the connected BMC Helix instance, optionally filtered by status.",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Optional saved BMC Helix connection ID. Omit to use the first connected instance.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "status": {
+            "default": "",
+            "description": "Optional status filter, e.g. 'New', 'In Progress', 'Resolved'.",
+            "title": "Status",
+            "type": "string"
+          },
+          "limit": {
+            "default": 50,
+            "description": "Max records to return.",
+            "title": "Limit",
+            "type": "integer"
+          }
+        },
+        "title": "ListIncidentsParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "$defs": {
+          "Incident": {
+            "properties": {
+              "id": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "integer"
+                  }
+                ],
+                "title": "Id"
+              },
+              "title": {
+                "title": "Title",
+                "type": "string"
+              },
+              "kind": {
+                "default": "",
+                "title": "Kind",
+                "type": "string"
+              },
+              "subtitle": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Subtitle"
+              },
+              "description": {
+                "default": "",
+                "title": "Description",
+                "type": "string"
+              },
+              "status": {
+                "default": "",
+                "title": "Status",
+                "type": "string"
+              },
+              "url": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Url"
+              },
+              "entry_id": {
+                "title": "Entry Id",
+                "type": "string"
+              },
+              "priority": {
+                "default": "",
+                "title": "Priority",
+                "type": "string"
+              },
+              "raw": {
+                "additionalProperties": true,
+                "default": {},
+                "title": "Raw",
+                "type": "object"
+              }
+            },
+            "required": [
+              "id",
+              "title",
+              "entry_id"
+            ],
+            "title": "Incident",
+            "type": "object",
+            "x-sdl": "entity"
+          }
+        },
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "incidents": {
+            "default": [],
+            "items": {
+              "$ref": "#/$defs/Incident"
+            },
+            "title": "Incidents",
+            "type": "array"
+          }
+        },
+        "required": [
+          "id",
+          "title"
+        ],
+        "title": "IncidentList",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "bmc-helix-connector.list_incidents",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "bmc_helix"
+    },
+    {
+      "name": "get_incident",
+      "description": "Read one incident in full by entry id.",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Optional saved BMC Helix connection ID. Omit to use the first connected instance.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "entry_id": {
+            "description": "AR System entry id (the form's primary key value, e.g. Incident Number).",
+            "title": "Entry Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "entry_id"
+        ],
+        "title": "EntryIdParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "default": "",
+            "title": "Description",
+            "type": "string"
+          },
+          "status": {
+            "default": "",
+            "title": "Status",
+            "type": "string"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "entry_id": {
+            "title": "Entry Id",
+            "type": "string"
+          },
+          "priority": {
+            "default": "",
+            "title": "Priority",
+            "type": "string"
+          },
+          "raw": {
+            "additionalProperties": true,
+            "default": {},
+            "title": "Raw",
+            "type": "object"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "entry_id"
+        ],
+        "title": "Incident",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "bmc-helix-connector.get_incident",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "bmc_helix"
+    },
+    {
+      "name": "create_incident",
+      "description": "Create a new incident.",
+      "action_type": "write",
+      "chain_callable": true,
+      "effects": [
+        "create:incident"
+      ],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Optional saved BMC Helix connection ID. Omit to use the first connected instance.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "values": {
+            "additionalProperties": true,
+            "description": "AR System field name/value pairs for the new incident, e.g. {'Description': '...', 'Impact': '4-Minor/Localized'}.",
+            "title": "Values",
+            "type": "object"
+          }
+        },
+        "required": [
+          "values"
+        ],
+        "title": "CreateIncidentParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "default": "",
+            "title": "Description",
+            "type": "string"
+          },
+          "status": {
+            "default": "",
+            "title": "Status",
+            "type": "string"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "entry_id": {
+            "title": "Entry Id",
+            "type": "string"
+          },
+          "priority": {
+            "default": "",
+            "title": "Priority",
+            "type": "string"
+          },
+          "raw": {
+            "additionalProperties": true,
+            "default": {},
+            "title": "Raw",
+            "type": "object"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "entry_id"
+        ],
+        "title": "Incident",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "bmc-helix-connector.create_incident",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "bmc_helix"
+    },
+    {
+      "name": "update_incident",
+      "description": "Update selected fields of an existing incident (state, priority). Only given fields change.",
+      "action_type": "write",
+      "chain_callable": true,
+      "effects": [
+        "update:incident"
+      ],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Optional saved BMC Helix connection ID. Omit to use the first connected instance.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "entry_id": {
+            "description": "AR System entry id (the form's primary key value, e.g. Incident Number).",
+            "title": "Entry Id",
+            "type": "string"
+          },
+          "values": {
+            "additionalProperties": true,
+            "description": "AR System field name/value pairs to update, e.g. {'Status': 'Resolved'}.",
+            "title": "Values",
+            "type": "object"
+          }
+        },
+        "required": [
+          "entry_id",
+          "values"
+        ],
+        "title": "UpdateIncidentParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "default": "",
+            "title": "Description",
+            "type": "string"
+          },
+          "status": {
+            "default": "",
+            "title": "Status",
+            "type": "string"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "entry_id": {
+            "title": "Entry Id",
+            "type": "string"
+          },
+          "priority": {
+            "default": "",
+            "title": "Priority",
+            "type": "string"
+          },
+          "raw": {
+            "additionalProperties": true,
+            "default": {},
+            "title": "Raw",
+            "type": "object"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "entry_id"
+        ],
+        "title": "Incident",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "bmc-helix-connector.update_incident",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "bmc_helix"
+    },
+    {
+      "name": "list_problems",
+      "description": "List problems on the connected BMC Helix instance, optionally filtered by status.",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Optional saved BMC Helix connection ID. Omit to use the first connected instance.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "status": {
+            "default": "",
+            "description": "Optional status filter.",
+            "title": "Status",
+            "type": "string"
+          },
+          "limit": {
+            "default": 50,
+            "description": "Max records to return.",
+            "title": "Limit",
+            "type": "integer"
+          }
+        },
+        "title": "ListProblemsParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "$defs": {
+          "Problem": {
+            "properties": {
+              "id": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "integer"
+                  }
+                ],
+                "title": "Id"
+              },
+              "title": {
+                "title": "Title",
+                "type": "string"
+              },
+              "kind": {
+                "default": "",
+                "title": "Kind",
+                "type": "string"
+              },
+              "subtitle": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Subtitle"
+              },
+              "description": {
+                "default": "",
+                "title": "Description",
+                "type": "string"
+              },
+              "status": {
+                "default": "",
+                "title": "Status",
+                "type": "string"
+              },
+              "url": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Url"
+              },
+              "entry_id": {
+                "title": "Entry Id",
+                "type": "string"
+              },
+              "raw": {
+                "additionalProperties": true,
+                "default": {},
+                "title": "Raw",
+                "type": "object"
+              }
+            },
+            "required": [
+              "id",
+              "title",
+              "entry_id"
+            ],
+            "title": "Problem",
+            "type": "object",
+            "x-sdl": "entity"
+          }
+        },
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "problems": {
+            "default": [],
+            "items": {
+              "$ref": "#/$defs/Problem"
+            },
+            "title": "Problems",
+            "type": "array"
+          }
+        },
+        "required": [
+          "id",
+          "title"
+        ],
+        "title": "ProblemList",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "bmc-helix-connector.list_problems",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "bmc_helix"
+    },
+    {
+      "name": "create_problem",
+      "description": "Create a new problem record.",
+      "action_type": "write",
+      "chain_callable": true,
+      "effects": [
+        "create:problem"
+      ],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Optional saved BMC Helix connection ID. Omit to use the first connected instance.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "values": {
+            "additionalProperties": true,
+            "description": "AR System field name/value pairs for the new problem investigation.",
+            "title": "Values",
+            "type": "object"
+          }
+        },
+        "required": [
+          "values"
+        ],
+        "title": "CreateProblemParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "default": "",
+            "title": "Description",
+            "type": "string"
+          },
+          "status": {
+            "default": "",
+            "title": "Status",
+            "type": "string"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "entry_id": {
+            "title": "Entry Id",
+            "type": "string"
+          },
+          "raw": {
+            "additionalProperties": true,
+            "default": {},
+            "title": "Raw",
+            "type": "object"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "entry_id"
+        ],
+        "title": "Problem",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "bmc-helix-connector.create_problem",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "bmc_helix"
+    },
+    {
+      "name": "update_problem",
+      "description": "Update selected fields of an existing problem. Only given fields change.",
+      "action_type": "write",
+      "chain_callable": true,
+      "effects": [
+        "update:problem"
+      ],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Optional saved BMC Helix connection ID. Omit to use the first connected instance.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "entry_id": {
+            "description": "AR System entry id (the form's primary key value, e.g. Incident Number).",
+            "title": "Entry Id",
+            "type": "string"
+          },
+          "values": {
+            "additionalProperties": true,
+            "description": "AR System field name/value pairs to update.",
+            "title": "Values",
+            "type": "object"
+          }
+        },
+        "required": [
+          "entry_id",
+          "values"
+        ],
+        "title": "UpdateProblemParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "default": "",
+            "title": "Description",
+            "type": "string"
+          },
+          "status": {
+            "default": "",
+            "title": "Status",
+            "type": "string"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "entry_id": {
+            "title": "Entry Id",
+            "type": "string"
+          },
+          "raw": {
+            "additionalProperties": true,
+            "default": {},
+            "title": "Raw",
+            "type": "object"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "entry_id"
+        ],
+        "title": "Problem",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "bmc-helix-connector.update_problem",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "bmc_helix"
+    },
+    {
+      "name": "list_change_requests",
+      "description": "List change requests in the connected BMC Helix instance, optionally filtered by state.",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Optional saved BMC Helix connection ID. Omit to use the first connected instance.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "status": {
+            "default": "",
+            "description": "Optional status filter, e.g. 'Draft', 'Request For Authorization', 'Implementation'.",
+            "title": "Status",
+            "type": "string"
+          },
+          "limit": {
+            "default": 50,
+            "description": "Max records to return.",
+            "title": "Limit",
+            "type": "integer"
+          }
+        },
+        "title": "ListChangesParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "$defs": {
+          "ChangeRequest": {
+            "properties": {
+              "id": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "integer"
+                  }
+                ],
+                "title": "Id"
+              },
+              "title": {
+                "title": "Title",
+                "type": "string"
+              },
+              "kind": {
+                "default": "",
+                "title": "Kind",
+                "type": "string"
+              },
+              "subtitle": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Subtitle"
+              },
+              "description": {
+                "default": "",
+                "title": "Description",
+                "type": "string"
+              },
+              "status": {
+                "default": "",
+                "title": "Status",
+                "type": "string"
+              },
+              "url": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Url"
+              },
+              "entry_id": {
+                "title": "Entry Id",
+                "type": "string"
+              },
+              "raw": {
+                "additionalProperties": true,
+                "default": {},
+                "title": "Raw",
+                "type": "object"
+              }
+            },
+            "required": [
+              "id",
+              "title",
+              "entry_id"
+            ],
+            "title": "ChangeRequest",
+            "type": "object",
+            "x-sdl": "entity"
+          }
+        },
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "changes": {
+            "default": [],
+            "items": {
+              "$ref": "#/$defs/ChangeRequest"
+            },
+            "title": "Changes",
+            "type": "array"
+          }
+        },
+        "required": [
+          "id",
+          "title"
+        ],
+        "title": "ChangeRequestList",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "bmc-helix-connector.list_change_requests",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "bmc_helix"
+    },
+    {
+      "name": "create_change_request",
+      "description": "Create a new change request.",
+      "action_type": "write",
+      "chain_callable": true,
+      "effects": [
+        "create:change"
+      ],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Optional saved BMC Helix connection ID. Omit to use the first connected instance.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "values": {
+            "additionalProperties": true,
+            "description": "AR System field name/value pairs for the new change request.",
+            "title": "Values",
+            "type": "object"
+          }
+        },
+        "required": [
+          "values"
+        ],
+        "title": "CreateChangeParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "default": "",
+            "title": "Description",
+            "type": "string"
+          },
+          "status": {
+            "default": "",
+            "title": "Status",
+            "type": "string"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "entry_id": {
+            "title": "Entry Id",
+            "type": "string"
+          },
+          "raw": {
+            "additionalProperties": true,
+            "default": {},
+            "title": "Raw",
+            "type": "object"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "entry_id"
+        ],
+        "title": "ChangeRequest",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "bmc-helix-connector.create_change_request",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "bmc_helix"
+    },
+    {
+      "name": "update_change_request",
+      "description": "Update selected fields of an existing change request (state, approval). Only given fields change.",
+      "action_type": "write",
+      "chain_callable": true,
+      "effects": [
+        "update:change"
+      ],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Optional saved BMC Helix connection ID. Omit to use the first connected instance.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "entry_id": {
+            "description": "AR System entry id (the form's primary key value, e.g. Incident Number).",
+            "title": "Entry Id",
+            "type": "string"
+          },
+          "values": {
+            "additionalProperties": true,
+            "description": "AR System field name/value pairs to update.",
+            "title": "Values",
+            "type": "object"
+          }
+        },
+        "required": [
+          "entry_id",
+          "values"
+        ],
+        "title": "UpdateChangeParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "default": "",
+            "title": "Description",
+            "type": "string"
+          },
+          "status": {
+            "default": "",
+            "title": "Status",
+            "type": "string"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "entry_id": {
+            "title": "Entry Id",
+            "type": "string"
+          },
+          "raw": {
+            "additionalProperties": true,
+            "default": {},
+            "title": "Raw",
+            "type": "object"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "entry_id"
+        ],
+        "title": "ChangeRequest",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "bmc-helix-connector.update_change_request",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "bmc_helix"
+    },
+    {
+      "name": "list_work_orders",
+      "description": "List work orders on the connected BMC Helix instance, optionally filtered by status.",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Optional saved BMC Helix connection ID. Omit to use the first connected instance.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "status": {
+            "default": "",
+            "description": "Optional status filter.",
+            "title": "Status",
+            "type": "string"
+          },
+          "limit": {
+            "default": 50,
+            "description": "Max records to return.",
+            "title": "Limit",
+            "type": "integer"
+          }
+        },
+        "title": "ListWorkOrdersParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "$defs": {
+          "WorkOrder": {
+            "properties": {
+              "id": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "integer"
+                  }
+                ],
+                "title": "Id"
+              },
+              "title": {
+                "title": "Title",
+                "type": "string"
+              },
+              "kind": {
+                "default": "",
+                "title": "Kind",
+                "type": "string"
+              },
+              "subtitle": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Subtitle"
+              },
+              "description": {
+                "default": "",
+                "title": "Description",
+                "type": "string"
+              },
+              "status": {
+                "default": "",
+                "title": "Status",
+                "type": "string"
+              },
+              "url": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Url"
+              },
+              "entry_id": {
+                "title": "Entry Id",
+                "type": "string"
+              },
+              "raw": {
+                "additionalProperties": true,
+                "default": {},
+                "title": "Raw",
+                "type": "object"
+              }
+            },
+            "required": [
+              "id",
+              "title",
+              "entry_id"
+            ],
+            "title": "WorkOrder",
+            "type": "object",
+            "x-sdl": "entity"
+          }
+        },
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "work_orders": {
+            "default": [],
+            "items": {
+              "$ref": "#/$defs/WorkOrder"
+            },
+            "title": "Work Orders",
+            "type": "array"
+          }
+        },
+        "required": [
+          "id",
+          "title"
+        ],
+        "title": "WorkOrderList",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "bmc-helix-connector.list_work_orders",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "bmc_helix"
+    },
+    {
+      "name": "create_work_order",
+      "description": "Create a new Service Catalog work order.",
+      "action_type": "write",
+      "chain_callable": true,
+      "effects": [
+        "create:work_order"
+      ],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Optional saved BMC Helix connection ID. Omit to use the first connected instance.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "values": {
+            "additionalProperties": true,
+            "description": "AR System field name/value pairs for the new work order.",
+            "title": "Values",
+            "type": "object"
+          }
+        },
+        "required": [
+          "values"
+        ],
+        "title": "CreateWorkOrderParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "default": "",
+            "title": "Description",
+            "type": "string"
+          },
+          "status": {
+            "default": "",
+            "title": "Status",
+            "type": "string"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "entry_id": {
+            "title": "Entry Id",
+            "type": "string"
+          },
+          "raw": {
+            "additionalProperties": true,
+            "default": {},
+            "title": "Raw",
+            "type": "object"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "entry_id"
+        ],
+        "title": "WorkOrder",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "bmc-helix-connector.create_work_order",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "bmc_helix"
+    },
+    {
+      "name": "update_work_order",
+      "description": "Update selected fields of an existing work order. Only given fields change.",
+      "action_type": "write",
+      "chain_callable": true,
+      "effects": [
+        "update:work_order"
+      ],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Optional saved BMC Helix connection ID. Omit to use the first connected instance.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "entry_id": {
+            "description": "AR System entry id (the form's primary key value, e.g. Incident Number).",
+            "title": "Entry Id",
+            "type": "string"
+          },
+          "values": {
+            "additionalProperties": true,
+            "description": "AR System field name/value pairs to update.",
+            "title": "Values",
+            "type": "object"
+          }
+        },
+        "required": [
+          "entry_id",
+          "values"
+        ],
+        "title": "UpdateWorkOrderParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "default": "",
+            "title": "Description",
+            "type": "string"
+          },
+          "status": {
+            "default": "",
+            "title": "Status",
+            "type": "string"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "entry_id": {
+            "title": "Entry Id",
+            "type": "string"
+          },
+          "raw": {
+            "additionalProperties": true,
+            "default": {},
+            "title": "Raw",
+            "type": "object"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "entry_id"
+        ],
+        "title": "WorkOrder",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "bmc-helix-connector.update_work_order",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "bmc_helix"
+    },
+    {
+      "name": "list_knowledge_articles",
+      "description": "List Knowledge articles in the connected BMC Helix instance.",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Optional saved BMC Helix connection ID. Omit to use the first connected instance.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "limit": {
+            "default": 50,
+            "description": "Max records to return.",
+            "title": "Limit",
+            "type": "integer"
+          }
+        },
+        "title": "ListKnowledgeParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "$defs": {
+          "KnowledgeArticle": {
+            "properties": {
+              "id": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "integer"
+                  }
+                ],
+                "title": "Id"
+              },
+              "title": {
+                "title": "Title",
+                "type": "string"
+              },
+              "kind": {
+                "default": "",
+                "title": "Kind",
+                "type": "string"
+              },
+              "subtitle": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Subtitle"
+              },
+              "description": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Description"
+              },
+              "status": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Status"
+              },
+              "url": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Url"
+              },
+              "entry_id": {
+                "title": "Entry Id",
+                "type": "string"
+              },
+              "raw": {
+                "additionalProperties": true,
+                "default": {},
+                "title": "Raw",
+                "type": "object"
+              }
+            },
+            "required": [
+              "id",
+              "title",
+              "entry_id"
+            ],
+            "title": "KnowledgeArticle",
+            "type": "object",
+            "x-sdl": "entity"
+          }
+        },
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "articles": {
+            "default": [],
+            "items": {
+              "$ref": "#/$defs/KnowledgeArticle"
+            },
+            "title": "Articles",
+            "type": "array"
+          }
+        },
+        "required": [
+          "id",
+          "title"
+        ],
+        "title": "KnowledgeArticleList",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "bmc-helix-connector.list_knowledge_articles",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "bmc_helix"
+    },
+    {
+      "name": "list_cmdb_cis",
+      "description": "List Configuration Items (CIs) in the CMDB, optionally filtered by class.",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Optional saved BMC Helix connection ID. Omit to use the first connected instance.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "ci_class": {
+            "default": "",
+            "description": "Optional CI class filter, e.g. 'BMC_COMPUTERSYSTEM'.",
+            "title": "Ci Class",
+            "type": "string"
+          },
+          "limit": {
+            "default": 50,
+            "description": "Max records to return.",
+            "title": "Limit",
+            "type": "integer"
+          }
+        },
+        "title": "ListCIsParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "$defs": {
+          "ConfigItem": {
+            "properties": {
+              "id": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "integer"
+                  }
+                ],
+                "title": "Id"
+              },
+              "title": {
+                "title": "Title",
+                "type": "string"
+              },
+              "kind": {
+                "default": "",
+                "title": "Kind",
+                "type": "string"
+              },
+              "subtitle": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Subtitle"
+              },
+              "description": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Description"
+              },
+              "status": {
+                "default": "",
+                "title": "Status",
+                "type": "string"
+              },
+              "url": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Url"
+              },
+              "entry_id": {
+                "title": "Entry Id",
+                "type": "string"
+              },
+              "ci_class": {
+                "default": "",
+                "title": "Ci Class",
+                "type": "string"
+              },
+              "raw": {
+                "additionalProperties": true,
+                "default": {},
+                "title": "Raw",
+                "type": "object"
+              }
+            },
+            "required": [
+              "id",
+              "title",
+              "entry_id"
+            ],
+            "title": "ConfigItem",
+            "type": "object",
+            "x-sdl": "entity"
+          }
+        },
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "items": {
+            "default": [],
+            "items": {
+              "$ref": "#/$defs/ConfigItem"
+            },
+            "title": "Items",
+            "type": "array"
+          }
+        },
+        "required": [
+          "id",
+          "title"
+        ],
+        "title": "ConfigItemList",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "bmc-helix-connector.list_cmdb_cis",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "bmc_helix"
+    },
+    {
+      "name": "list_table",
+      "description": "List records from any AR System form by name -- a generic passthrough for forms not covered by typed wrappers, e.g. custom Helix modules.",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Optional saved BMC Helix connection ID. Omit to use the first connected instance.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "form_name": {
+            "description": "Exact AR System form name, e.g. 'HPD:Help Desk'.",
+            "title": "Form Name",
+            "type": "string"
+          },
+          "qualification": {
+            "default": "",
+            "description": "Optional AR System qualification query, e.g. '\\'Status\\' = \"New\"'.",
+            "title": "Qualification",
+            "type": "string"
+          },
+          "limit": {
+            "default": 50,
+            "description": "Max records to return.",
+            "title": "Limit",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "form_name"
+        ],
+        "title": "GenericFormParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "$defs": {
+          "GenericEntry": {
+            "properties": {
+              "id": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "integer"
+                  }
+                ],
+                "title": "Id"
+              },
+              "title": {
+                "title": "Title",
+                "type": "string"
+              },
+              "kind": {
+                "default": "",
+                "title": "Kind",
+                "type": "string"
+              },
+              "subtitle": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Subtitle"
+              },
+              "description": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Description"
+              },
+              "status": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Status"
+              },
+              "url": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Url"
+              },
+              "entry_id": {
+                "title": "Entry Id",
+                "type": "string"
+              },
+              "raw": {
+                "additionalProperties": true,
+                "default": {},
+                "title": "Raw",
+                "type": "object"
+              }
+            },
+            "required": [
+              "id",
+              "title",
+              "entry_id"
+            ],
+            "title": "GenericEntry",
+            "type": "object",
+            "x-sdl": "entity"
+          }
+        },
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "entries": {
+            "default": [],
+            "items": {
+              "$ref": "#/$defs/GenericEntry"
+            },
+            "title": "Entries",
+            "type": "array"
+          }
+        },
+        "required": [
+          "id",
+          "title"
+        ],
+        "title": "GenericEntryList",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "bmc-helix-connector.list_table",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "bmc_helix"
+    },
+    {
+      "name": "get_record",
+      "description": "Read one record from any AR System form by entry id.",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Optional saved BMC Helix connection ID. Omit to use the first connected instance.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "form_name": {
+            "description": "Exact AR System form name.",
+            "title": "Form Name",
+            "type": "string"
+          },
+          "entry_id": {
+            "description": "Entry id (request id).",
+            "title": "Entry Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "form_name",
+          "entry_id"
+        ],
+        "title": "GenericEntryParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "entry_id": {
+            "title": "Entry Id",
+            "type": "string"
+          },
+          "raw": {
+            "additionalProperties": true,
+            "default": {},
+            "title": "Raw",
+            "type": "object"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "entry_id"
+        ],
+        "title": "GenericEntry",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "bmc-helix-connector.get_record",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "bmc_helix"
+    },
+    {
+      "name": "create_record",
+      "description": "Create a new record on any AR System form -- a generic passthrough for forms not covered by typed wrappers.",
+      "action_type": "write",
+      "chain_callable": true,
+      "effects": [
+        "create:record"
+      ],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Optional saved BMC Helix connection ID. Omit to use the first connected instance.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "form_name": {
+            "description": "Exact AR System form name.",
+            "title": "Form Name",
+            "type": "string"
+          },
+          "values": {
+            "additionalProperties": true,
+            "description": "Field name/value pairs for the new entry.",
+            "title": "Values",
+            "type": "object"
+          }
+        },
+        "required": [
+          "form_name",
+          "values"
+        ],
+        "title": "GenericCreateParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "entry_id": {
+            "title": "Entry Id",
+            "type": "string"
+          },
+          "raw": {
+            "additionalProperties": true,
+            "default": {},
+            "title": "Raw",
+            "type": "object"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "entry_id"
+        ],
+        "title": "GenericEntry",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "bmc-helix-connector.create_record",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "bmc_helix"
+    },
+    {
+      "name": "update_record",
+      "description": "Update selected fields of an existing record on any AR System form. Only given fields change.",
+      "action_type": "write",
+      "chain_callable": true,
+      "effects": [
+        "update:record"
+      ],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Optional saved BMC Helix connection ID. Omit to use the first connected instance.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "form_name": {
+            "description": "Exact AR System form name.",
+            "title": "Form Name",
+            "type": "string"
+          },
+          "entry_id": {
+            "description": "Entry id (request id).",
+            "title": "Entry Id",
+            "type": "string"
+          },
+          "values": {
+            "additionalProperties": true,
+            "description": "Field name/value pairs to update.",
+            "title": "Values",
+            "type": "object"
+          }
+        },
+        "required": [
+          "form_name",
+          "entry_id",
+          "values"
+        ],
+        "title": "GenericUpdateParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "entry_id": {
+            "title": "Entry Id",
+            "type": "string"
+          },
+          "raw": {
+            "additionalProperties": true,
+            "default": {},
+            "title": "Raw",
+            "type": "object"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "entry_id"
+        ],
+        "title": "GenericEntry",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "bmc-helix-connector.update_record",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "bmc_helix"
+    },
+    {
+      "name": "delete_record",
+      "description": "Permanently delete a record from any AR System form by entry id. Cannot be undone.",
+      "action_type": "write",
+      "chain_callable": true,
+      "effects": [
+        "delete:record"
+      ],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Optional saved BMC Helix connection ID. Omit to use the first connected instance.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "form_name": {
+            "description": "Exact AR System form name.",
+            "title": "Form Name",
+            "type": "string"
+          },
+          "entry_id": {
+            "description": "Entry id (request id).",
+            "title": "Entry Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "form_name",
+          "entry_id"
+        ],
+        "title": "GenericEntryParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "deleted": {
+            "default": true,
+            "title": "Deleted",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "id",
+          "title"
+        ],
+        "title": "DeleteResult",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "bmc-helix-connector.delete_record",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "bmc_helix"
+    },
+    {
+      "name": "audit_instance_health",
+      "description": "Build one aggregated health report across the connected BMC Helix instance: open incidents/problems/changes/work orders.",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Optional saved BMC Helix connection ID. Omit to use the first connected instance.",
+            "title": "Connection Id",
+            "type": "string"
+          }
+        },
+        "title": "AuditHealthParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "id": {
+            "default": "audit",
+            "title": "Id",
+            "type": "string"
+          },
+          "title": {
+            "default": "BMC Helix health audit",
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "open_incident_count": {
+            "default": 0,
+            "title": "Open Incident Count",
+            "type": "integer"
+          },
+          "open_problem_count": {
+            "default": 0,
+            "title": "Open Problem Count",
+            "type": "integer"
+          },
+          "open_change_count": {
+            "default": 0,
+            "title": "Open Change Count",
+            "type": "integer"
+          },
+          "open_work_order_count": {
+            "default": 0,
+            "title": "Open Work Order Count",
+            "type": "integer"
+          },
+          "raw": {
+            "additionalProperties": true,
+            "default": {},
+            "title": "Raw",
+            "type": "object"
+          }
+        },
+        "title": "HealthAudit",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "bmc-helix-connector.audit_instance_health",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "bmc_helix"
+    }
+  ],
+  "signals": [],
+  "schedules": [],
+  "required_scopes": [],
+  "icon_size_bytes": 698,
+  "lifecycle": {
+    "health_check": {
+      "interval_sec": 60
+    }
+  },
+  "secrets": [
+    {
+      "name": "bmc_helix_connections",
+      "description": "JSON list of connected BMC Helix instances and encrypted credentials. Managed only through connect_bmc_helix and disconnect_bmc_helix.",
+      "required": true,
+      "write_mode": "both",
+      "max_bytes": 65536,
+      "scope": "user",
+      "rotation_hint_days": 90
+    }
+  ],
+  "panels": [
+    {
+      "panel_id": "secrets",
+      "slot": "right",
+      "title": "Secrets",
+      "tree": {},
+      "icon": "KeyRound",
+      "refresh": "manual",
+      "center_overlay": false
+    },
+    {
+      "panel_id": "bmc_helix_sidebar",
+      "slot": "left",
+      "title": "BMC Helix",
+      "tree": {},
+      "icon": "",
+      "refresh": "manual",
+      "center_overlay": false
+    },
+    {
+      "panel_id": "bmc_helix_connect_help",
+      "slot": "center",
+      "title": "Connecting BMC Helix",
+      "tree": {},
+      "icon": "HelpCircle",
+      "refresh": "manual",
+      "center_overlay": true
+    },
+    {
+      "panel_id": "bmc_helix_center",
+      "slot": "center",
+      "title": "BMC Helix",
+      "tree": {},
+      "icon": "Ticket",
+      "refresh": "manual",
+      "center_overlay": true
+    },
+    {
+      "panel_id": "bmc_helix_settings",
+      "slot": "center",
+      "title": "BMC Helix settings",
+      "tree": {},
+      "icon": "Settings",
+      "refresh": "manual",
+      "center_overlay": true
+    }
+  ]
+}
