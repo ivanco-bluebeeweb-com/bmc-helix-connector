@@ -100,7 +100,7 @@ async def disconnect_bmc_helix(ctx, params: DisconnectBMCHelixParams) -> ActionR
 async def list_connections(ctx, params: NoParams) -> ActionResult:
     """Imperal action: list_connections."""
     connections = await _load_connections(ctx)
-    return ActionResult.success(data=ConnectionList(connections=[_connection_entity(c) for c in connections]))
+    return ActionResult.success(data=ConnectionList(connections=[_connection_entity(c) for c in connections]), summary="Connections listed.")
 
 
 def _to_incident(item: dict) -> Incident:
@@ -120,7 +120,7 @@ async def list_incidents(ctx, params: ListIncidentsParams) -> ActionResult:
         items = await client.list_incidents(status=params.status, limit=params.limit)
     except bc.BMCHelixError as exc:
         return ActionResult.error(str(exc), code="BMC_HELIX_LIST_INCIDENTS_FAILED", retryable=exc.retryable)
-    return ActionResult.success(data=IncidentList(incidents=[_to_incident(i) for i in items]))
+    return ActionResult.success(data=IncidentList(incidents=[_to_incident(i) for i in items]), summary="Incidents listed.")
 
 
 @chat.function("get_incident", "Read one incident in full by entry id.", action_type="read", chain_callable=True, data_model=Incident, event="bmc-helix-connector.get_incident")
@@ -131,7 +131,7 @@ async def get_incident(ctx, params: EntryIdParams) -> ActionResult:
         item = await client.get_entry("HPD:Help Desk", params.entry_id)
     except bc.BMCHelixError as exc:
         return ActionResult.error(str(exc), code="BMC_HELIX_GET_INCIDENT_FAILED", retryable=exc.retryable)
-    return ActionResult.success(data=_to_incident(item))
+    return ActionResult.success(data=_to_incident(item), summary="Incident retrieved.")
 
 
 @chat.function("create_incident", "Create a new incident.", action_type="write", chain_callable=True, data_model=Incident, event="bmc-helix-connector.create_incident", effects=["create:incident"])
@@ -173,7 +173,7 @@ async def list_problems(ctx, params: ListProblemsParams) -> ActionResult:
         items = await client.list_problems(status=params.status, limit=params.limit)
     except bc.BMCHelixError as exc:
         return ActionResult.error(str(exc), code="BMC_HELIX_LIST_PROBLEMS_FAILED", retryable=exc.retryable)
-    return ActionResult.success(data=ProblemList(problems=[_to_problem(i) for i in items]))
+    return ActionResult.success(data=ProblemList(problems=[_to_problem(i) for i in items]), summary="Problems listed.")
 
 
 @chat.function("create_problem", "Create a new problem record.", action_type="write", chain_callable=True, data_model=Problem, event="bmc-helix-connector.create_problem", effects=["create:problem"])
@@ -215,7 +215,7 @@ async def list_change_requests(ctx, params: ListChangesParams) -> ActionResult:
         items = await client.list_changes(status=params.status, limit=params.limit)
     except bc.BMCHelixError as exc:
         return ActionResult.error(str(exc), code="BMC_HELIX_LIST_CHANGES_FAILED", retryable=exc.retryable)
-    return ActionResult.success(data=ChangeRequestList(changes=[_to_change(i) for i in items]))
+    return ActionResult.success(data=ChangeRequestList(changes=[_to_change(i) for i in items]), summary="Change requests listed.")
 
 
 @chat.function("create_change_request", "Create a new change request.", action_type="write", chain_callable=True, data_model=ChangeRequest, event="bmc-helix-connector.create_change_request", effects=["create:change"])
@@ -257,7 +257,7 @@ async def list_work_orders(ctx, params: ListWorkOrdersParams) -> ActionResult:
         items = await client.list_work_orders(status=params.status, limit=params.limit)
     except bc.BMCHelixError as exc:
         return ActionResult.error(str(exc), code="BMC_HELIX_LIST_WORK_ORDERS_FAILED", retryable=exc.retryable)
-    return ActionResult.success(data=WorkOrderList(work_orders=[_to_work_order(i) for i in items]))
+    return ActionResult.success(data=WorkOrderList(work_orders=[_to_work_order(i) for i in items]), summary="Work orders listed.")
 
 
 @chat.function("create_work_order", "Create a new Service Catalog work order.", action_type="write", chain_callable=True, data_model=WorkOrder, event="bmc-helix-connector.create_work_order", effects=["create:work_order"])
@@ -293,7 +293,7 @@ async def list_knowledge_articles(ctx, params: ListKnowledgeParams) -> ActionRes
         return ActionResult.error(str(exc), code="BMC_HELIX_LIST_KNOWLEDGE_FAILED", retryable=exc.retryable)
     return ActionResult.success(data=KnowledgeArticleList(articles=[
         KnowledgeArticle(entry_id=str(i.get("entry_id", i.get("Article ID", ""))), title=i.get("Title", str(i.get("Article ID", ""))), raw=i) for i in items
-    ]))
+    ]), summary="Knowledge articles listed.")
 
 
 @chat.function("list_cmdb_cis", "List Configuration Items (CIs) in the CMDB, optionally filtered by class.", action_type="read", chain_callable=True, data_model=ConfigItemList, event="bmc-helix-connector.list_cmdb_cis")
@@ -306,7 +306,7 @@ async def list_cmdb_cis(ctx, params: ListCIsParams) -> ActionResult:
         return ActionResult.error(str(exc), code="BMC_HELIX_LIST_CIS_FAILED", retryable=exc.retryable)
     return ActionResult.success(data=ConfigItemList(items=[
         ConfigItem(entry_id=str(i.get("entry_id", i.get("InstanceId", ""))), title=i.get("Name", str(i.get("InstanceId", ""))), ci_class=i.get("ClassId", params.ci_class), status=i.get("Status", ""), raw=i) for i in items
-    ]))
+    ]), summary="Cmdb cis listed.")
 
 
 @chat.function("list_table", "List records from any AR System form by name -- a generic passthrough for forms not covered by typed wrappers, e.g. custom Helix modules.", action_type="read", chain_callable=True, data_model=GenericEntryList, event="bmc-helix-connector.list_table")
@@ -319,7 +319,7 @@ async def list_table(ctx, params: GenericFormParams) -> ActionResult:
         return ActionResult.error(str(exc), code="BMC_HELIX_LIST_TABLE_FAILED", retryable=exc.retryable)
     return ActionResult.success(data=GenericEntryList(entries=[
         GenericEntry(entry_id=str(i.get("entry_id", "")), title=str(i.get("entry_id", "")), raw=i) for i in items
-    ]))
+    ]), summary="Table listed.")
 
 
 @chat.function("get_record", "Read one record from any AR System form by entry id.", action_type="read", chain_callable=True, data_model=GenericEntry, event="bmc-helix-connector.get_record")
@@ -330,7 +330,7 @@ async def get_record(ctx, params: GenericEntryParams) -> ActionResult:
         item = await client.get_entry(params.form_name, params.entry_id)
     except bc.BMCHelixError as exc:
         return ActionResult.error(str(exc), code="BMC_HELIX_GET_RECORD_FAILED", retryable=exc.retryable)
-    return ActionResult.success(data=GenericEntry(entry_id=params.entry_id, title=params.entry_id, raw=item))
+    return ActionResult.success(data=GenericEntry(entry_id=params.entry_id, title=params.entry_id, raw=item), summary="Record retrieved.")
 
 
 @chat.function("create_record", "Create a new record on any AR System form -- a generic passthrough for forms not covered by typed wrappers.", action_type="write", chain_callable=True, data_model=GenericEntry, event="bmc-helix-connector.create_record", effects=["create:record"])
