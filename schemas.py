@@ -122,15 +122,19 @@ class BMCHelixConnection(sdl.Entity):
 
 
 class ConnectionList(sdl.Entity):
+    id: str = ""
+    title: str = ""
     connections: list[BMCHelixConnection] = []
 
 
 class DeleteResult(sdl.Entity):
+    title: str = ""
     id: str
     deleted: bool = True
 
 
 class Incident(sdl.Entity):
+    id: str = ""
     entry_id: str
     title: str
     description: str = ""
@@ -140,10 +144,13 @@ class Incident(sdl.Entity):
 
 
 class IncidentList(sdl.Entity):
+    id: str = ""
+    title: str = ""
     incidents: list[Incident] = []
 
 
 class Problem(sdl.Entity):
+    id: str = ""
     entry_id: str
     title: str
     description: str = ""
@@ -152,10 +159,13 @@ class Problem(sdl.Entity):
 
 
 class ProblemList(sdl.Entity):
+    id: str = ""
+    title: str = ""
     problems: list[Problem] = []
 
 
 class ChangeRequest(sdl.Entity):
+    id: str = ""
     entry_id: str
     title: str
     description: str = ""
@@ -164,10 +174,13 @@ class ChangeRequest(sdl.Entity):
 
 
 class ChangeRequestList(sdl.Entity):
+    id: str = ""
+    title: str = ""
     changes: list[ChangeRequest] = []
 
 
 class WorkOrder(sdl.Entity):
+    id: str = ""
     entry_id: str
     title: str
     description: str = ""
@@ -176,20 +189,26 @@ class WorkOrder(sdl.Entity):
 
 
 class WorkOrderList(sdl.Entity):
+    id: str = ""
+    title: str = ""
     work_orders: list[WorkOrder] = []
 
 
 class KnowledgeArticle(sdl.Entity):
+    id: str = ""
     entry_id: str
     title: str
     raw: dict = {}
 
 
 class KnowledgeArticleList(sdl.Entity):
+    id: str = ""
+    title: str = ""
     articles: list[KnowledgeArticle] = []
 
 
 class ConfigItem(sdl.Entity):
+    id: str = ""
     entry_id: str
     title: str
     ci_class: str = ""
@@ -198,16 +217,21 @@ class ConfigItem(sdl.Entity):
 
 
 class ConfigItemList(sdl.Entity):
+    id: str = ""
+    title: str = ""
     items: list[ConfigItem] = []
 
 
 class GenericEntry(sdl.Entity):
+    id: str = ""
     entry_id: str
     title: str
     raw: dict = {}
 
 
 class GenericEntryList(sdl.Entity):
+    id: str = ""
+    title: str = ""
     entries: list[GenericEntry] = []
 
 
