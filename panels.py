@@ -20,6 +20,9 @@ async def bmc_helix_sidebar(ctx, **kwargs) -> ui.UINode:
     if not connections:
         return ui.Stack(direction="v", gap=3, align="stretch", children=[
             ui.Text("Connect your BMC Helix instance", variant="subtitle"),
+            ui.Button("Sign in with BMC Helix (SSO / JWT)", variant="primary", size="sm", full_width=True, icon="login"),
+            ui.Divider(),
+            ui.Text("Or connect via AR System Login / JWT", variant="caption"),
             ui.Form(action="connect_bmc_helix", submit_label="Connect", children=[
                 _field("Instance label", ui.Input(param_name="label", placeholder="Acme Production")),
                 _field("AR REST host", ui.Input(param_name="host", placeholder="https://acme-restapi.onbmc.com")),
