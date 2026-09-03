@@ -20,7 +20,7 @@ async def bmc_helix_sidebar(ctx, **kwargs) -> ui.UINode:
     if not connections:
         return ui.Stack(direction="v", gap=3, align="stretch", children=[
             ui.Text("Connect your BMC Helix instance", variant="subtitle"),
-            ui.Button("Sign in with BMC Helix (SSO / JWT)", variant="primary", size="sm", full_width=True, icon="login"),
+            ui.Button("Sign in with BMC Helix (SSO / JWT)", variant="primary", size="sm", icon="login"),
             ui.Divider(),
             ui.Text("Or connect via AR System Login / JWT", variant="caption"),
             ui.Form(action="connect_bmc_helix", submit_label="Connect", children=[
@@ -37,15 +37,15 @@ async def bmc_helix_sidebar(ctx, **kwargs) -> ui.UINode:
     return ui.Stack(direction="v", gap=2, align="stretch", children=[
         ui.Text(label, variant="subtitle"),
         ui.Divider(),
-        ui.Button("Incidents", variant="ghost", full_width=True, on_click=ui.Call("__panel__bmc_helix_center", view="incidents")),
-        ui.Button("Problems", variant="ghost", full_width=True, on_click=ui.Call("__panel__bmc_helix_center", view="problems")),
-        ui.Button("Changes", variant="ghost", full_width=True, on_click=ui.Call("__panel__bmc_helix_center", view="changes")),
-        ui.Button("Work orders", variant="ghost", full_width=True, on_click=ui.Call("__panel__bmc_helix_center", view="work_orders")),
-        ui.Button("Knowledge", variant="ghost", full_width=True, on_click=ui.Call("__panel__bmc_helix_center", view="knowledge")),
-        ui.Button("CMDB", variant="ghost", full_width=True, on_click=ui.Call("__panel__bmc_helix_center", view="cmdb")),
-        ui.Button("Generic form", variant="ghost", full_width=True, on_click=ui.Call("__panel__bmc_helix_center", view="generic")),
+        ui.Button("Incidents", variant="ghost", on_click=ui.Call("__panel__bmc_helix_center", view="incidents")),
+        ui.Button("Problems", variant="ghost", on_click=ui.Call("__panel__bmc_helix_center", view="problems")),
+        ui.Button("Changes", variant="ghost", on_click=ui.Call("__panel__bmc_helix_center", view="changes")),
+        ui.Button("Work orders", variant="ghost", on_click=ui.Call("__panel__bmc_helix_center", view="work_orders")),
+        ui.Button("Knowledge", variant="ghost", on_click=ui.Call("__panel__bmc_helix_center", view="knowledge")),
+        ui.Button("CMDB", variant="ghost", on_click=ui.Call("__panel__bmc_helix_center", view="cmdb")),
+        ui.Button("Generic form", variant="ghost", on_click=ui.Call("__panel__bmc_helix_center", view="generic")),
         ui.Divider(),
-        ui.Button("App settings", variant="ghost", full_width=True, icon="Settings", on_click=ui.Call("__panel__bmc_helix_settings")),
+        ui.Button("App settings", variant="ghost", icon="Settings", on_click=ui.Call("__panel__bmc_helix_settings")),
     ])
 
 
